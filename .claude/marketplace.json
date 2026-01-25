@@ -1,0 +1,15 @@
+{
+  "name": "common-skills",
+  "owner": {
+    "name": "Alan Fu",
+    "url": "https://blog.maeteno.com/"
+  },
+  "plugins": [
+    {
+      "name": "common",
+      "source": "./",
+      "description": "Claude Skills for Common Tasks",
+      "version": "1.0.0"
+    }
+  ]
+}

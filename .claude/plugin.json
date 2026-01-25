@@ -1,0 +1,14 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "Claude Skills for Common Tasks",
+  "author": {
+    "name": "Alan Fu",
+    "url": "https://blog.maeteno.com/"
+  },
+  "repository": "https://github.com/maeteno/skills",
+  "license": "MIT",
+  "keywords": [
+    "translate"
+  ]
+}
