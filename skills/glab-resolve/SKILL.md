@@ -7,7 +7,7 @@ description: Resolve GitLab MR review threads interactively. Use when the user w
 
 ## Overview
 
-逐一处理 GitLab MR 中的评论线程，按难易程度分类后规划执行步骤，用户确认计划后按步骤依次解决并提交。
+逐一处理 GitLab MR 中的评论线程，按难易程度分类后规划执行任务，用户确认计划后按任务顺序依次解决并提交。
 
 ## Workflow
 
@@ -63,7 +63,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 - **合并只能发生在同一难度内**，跨难度问题不可合并
 - 将同一难度下关联紧密的问题合并为一个执行任务（如同一文件的多个 typo、同一模块的相关修改）
 - **复杂问题默认不合并**，除非关联极为明显且改动范围确定
-- 每个执行任务可对应一次 commit（也可多个任务合并为一次 commit）
+- commit 时机由用户决定，可单个任务提交，也可多个任务完成后统一提交
 
 ### Step 5: 展示分类概览
 
@@ -93,11 +93,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 |---|-----------|---------|---------|
 | 1 | #<id> | <摘要> | <方案，如：已过期、无需处理> |
 
-所有难度组必须展示，无对应问题时显示"暂无"，例如：
-
-| # | Thread ID | 问题摘要 | 解决方案 |
-|---|-----------|---------|---------|
-| - | - | 暂无 | - |
+所有难度组必须展示，无对应问题时表格内容显示一行 `- | - | 暂无 | -`。
 
 ### Step 6: 展示执行任务计划
 
@@ -118,9 +114,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 
 ### Step 7: 按任务顺序循环执行
 
-用户确认计划后，**严格按 Task 顺序逐一执行，不得跳跃或乱序**。每个 Task 完成后再进入下一个。
-
-**进入 Step 7 后，立即从 Task 1 开始，展示其方案并等待确认，不得因为 Step 6 已整体确认计划而跳过 Task 1 的方案确认。每一个 Task，无论是第几个，都必须独立经过方案展示和用户确认后才能执行。**
+用户确认计划后，**严格按 Task 顺序逐一执行，不得跳跃或乱序**。立即从 Task 1 开始，每个 Task 无论是第几个，都必须独立展示方案并等待用户确认后才能执行——Step 6 的整体计划确认不能替代每个 Task 的执行确认。
 
 每个 Task 的执行流程：
 
@@ -162,7 +156,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 
 展示汇总后，询问用户是否对本次所有变更进行整体 code review：
 
-> 本次共完成 X 个步骤的修改，是否需要对所有变更做一次整体 code review？
+> 本次共完成 X 个 Task 的修改，是否需要对所有变更做一次整体 code review？
 
 若用户确认，使用 `git diff <first-commit>^..HEAD` 展示本次全部改动，并逐文件进行 review 分析。
 
