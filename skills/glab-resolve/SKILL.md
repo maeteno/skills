@@ -20,7 +20,7 @@ description: Resolve GitLab MR review threads interactively. Use when the user w
 git branch --show-current
 
 # 获取 MR 的源分支
-glab mr view <MR_ID> --output json | jq -r '.sourceBranch'
+glab mr view <MR_ID> --output json | jq -r '.source_branch'
 ```
 
 若当前分支与 MR 的源分支**不一致**，提示用户：
@@ -31,11 +31,11 @@ glab mr view <MR_ID> --output json | jq -r '.sourceBranch'
 
 ### Step 2: 获取 MR 评论
 
-使用 `glab api --paginate` 确保拉取所有评论（自动处理分页）：
+使用 `glab api --paginate` 确保拉取所有评论（自动处理分页）： 
 
 ```bash
 # 获取项目路径（URL 编码的 namespace/project）
-PROJECT=$(glab repo view --output json | jq -r '.fullPath' | python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.stdin.read().strip(), safe=''))")
+PROJECT=$(glab repo view --output json | jq -r '.path_with_namespace' | python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.stdin.read().strip(), safe=''))")
 
 # 拉取所有 discussions（包含线程结构）
 glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
