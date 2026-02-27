@@ -11,7 +11,25 @@ description: Resolve GitLab MR review threads interactively. Use when the user w
 
 ## Workflow
 
-### Step 1: 获取 MR 评论
+### Step 1: 确认 MR 与当前分支一致
+
+获取当前分支并与目标 MR 的源分支对比：
+
+```bash
+# 获取当前分支
+git branch --show-current
+
+# 获取 MR 的源分支
+glab mr view <MR_ID> --output json | jq -r '.sourceBranch'
+```
+
+若当前分支与 MR 的源分支**不一致**，提示用户：
+- 确认 MR ID 是否正确
+- 或切换到对应分支：`git checkout <source-branch>`
+
+用户确认后再继续。
+
+### Step 2: 获取 MR 评论
 
 使用 `glab api --paginate` 确保拉取所有评论（自动处理分页）：
 
@@ -27,7 +45,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 
 若未提供 MR ID，询问用户。若命令失败，提示用户检查 `glab auth status` 和项目权限。
 
-### Step 2: 分析并分类问题
+### Step 3: 分析并分类问题
 
 过滤掉已解决的线程，对未解决问题按难度分类：
 
@@ -38,7 +56,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 | 复杂 | 需深入分析，可能影响架构 | 设计变更、跨模块改动 |
 | 其他 | 无需代码修改 | 已过期、需继续讨论 |
 
-### Step 3: 规划执行步骤
+### Step 4: 规划执行步骤
 
 难度和合并是两个独立维度：
 
@@ -47,7 +65,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 - **复杂问题默认不合并**，除非关联极为明显且改动范围确定
 - 每个执行步骤对应一次 commit
 
-### Step 4: 展示分类概览
+### Step 5: 展示分类概览
 
 按难度分组展示所有问题，供用户了解全貌：
 
@@ -81,7 +99,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 |---|-----------|---------|---------|
 | - | - | 暂无 | - |
 
-### Step 5: 展示执行步骤计划
+### Step 6: 展示执行步骤计划
 
 将问题组织为有序的执行步骤，每步对应一次 commit：
 
@@ -98,7 +116,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 - 合并某些步骤（前提：同一难度）
 - 调整执行顺序
 
-### Step 6: 按步骤顺序执行
+### Step 7: 按步骤顺序执行
 
 用户确认计划后，**严格按步骤顺序逐一执行，不得跳跃或乱序**。每步完成后再进入下一步。
 
@@ -112,7 +130,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
    - 示例：`Resolve #12, #15 修正两处 typo`
 5. 确认 commit 后，继续执行下一步骤
 
-### Step 7: 展示执行汇总
+### Step 8: 展示执行汇总
 
 所有步骤执行完毕后，展示汇总表格：
 
@@ -127,6 +145,12 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 - 已完成：X 步（涉及 N 个问题）
 - 已跳过：X 步（涉及 N 个问题）
 - 总计：X 步
+
+展示汇总后，询问用户是否对本次所有变更进行整体 code review：
+
+> 本次共完成 X 个步骤的修改，是否需要对所有变更做一次整体 code review？
+
+若用户确认，使用 `git diff <first-commit>^..HEAD` 展示本次全部改动，并逐文件进行 review 分析。
 
 ## 错误处理
 
