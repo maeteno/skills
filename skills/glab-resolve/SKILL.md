@@ -47,7 +47,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 
 ### Step 3: 分析并分类问题
 
-过滤掉已解决的线程，对未解决问题按难度分类：
+过滤掉已解决的线程，只处理未解决的线程。然后按难度分类：
 
 | 难度 | 描述 | 示例 |
 |------|------|------|
