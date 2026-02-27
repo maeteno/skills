@@ -101,7 +101,7 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
 
 ### Step 6: 展示执行步骤计划
 
-将问题组织为有序的执行步骤，每步对应一次 commit：
+将问题组织为有序的执行步骤，每步修复完成后可提交，也可跳过等多步完成后统一提交：
 
 | 步骤 | 难度 | 包含问题 | 修复说明 |
 |------|------|---------|---------|
@@ -133,11 +133,14 @@ glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
    - 单元测试通过：运行受影响模块的相关测试
    - 若验证失败，修复问题后重新验证，不得跳过此步骤
 5. 使用 `git-commit` skill 生成 commit 信息；若不可用，直接运行 `git commit`
-   - Footer 添加所有关联 thread：`Resolve #<id1>, #<id2> <简要描述>`
-   - 示例：`Resolve #12, #15 修正两处 typo`
-6. **等待用户确认 commit 后**，再展示下一步骤的问题详情，重复流程
+   - commit 内容为**当前仓库所有未提交的变更**（可能包含多个步骤的修改）
+   - Footer 列出本次 commit 涵盖的所有 thread：`Resolve #<id1>, #<id2>, #<id3>`
+   - 示例：`Resolve #12, #15, #18 修正 typo 并添加注释`
+6. **等待用户确认是否提交**：
+   - 确认：执行提交，再展示下一步骤
+   - 跳过：不提交，直接继续下一步骤的修复，累积变更留待后续统一提交
 
-**严禁在 commit 完成后自动跳入下一步骤的修复执行。每个步骤必须经过用户明确确认方案后才能开始实施。**
+**严禁在完成修复或 commit 后自动跳入下一步骤的修复执行。每个步骤必须经过用户明确确认方案后才能开始实施。**
 
 ### Step 8: 展示执行汇总
 
