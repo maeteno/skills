@@ -12,5 +12,5 @@ PROJECT=$("$SCRIPT_DIR/get_project_name.sh")
 
 echo "Fetching unprocessed discussions for MR ${MR_ID} ..." >&2
 
-# Fetch all comments and filter unprocessed
-glab api --paginate "projects/${PROJECT}/merge_requests/${MR_ID}/notes" | uv run "$SCRIPT_DIR/filter_unprocessed.py" -
+# Fetch all discussions (merge paginated arrays) and filter unresolved threads
+glab api --paginate "projects/${PROJECT}/merge_requests/${MR_ID}/discussions" | jq -s 'add' | uv run "$SCRIPT_DIR/filter_unprocessed.py" -

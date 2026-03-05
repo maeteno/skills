@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# Usage: filter_unprocessed.py <DISCUSSIONS_JSON>
-# Filter unresolved human review comments from GitLab MR notes
-# Input: JSON array of notes from GitLab MR (e.g. from glab api)
-# Output: Simplified JSON of unresolved diff comments
+# Usage: filter_unprocessed.py <DISCUSSIONS_JSON | ->
+# Filter unresolved human review discussion threads from GitLab MR discussions API
+# Input: JSON array of discussions from GitLab MR /discussions endpoint
+# Output: Simplified JSON of unresolved diff discussion threads
 
 import sys
 import json
@@ -10,35 +10,44 @@ import json
 
 def main():
     if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <DISCUSSIONS_JSON>", file=sys.stderr)
+        print(f"Usage: {sys.argv[0]} <DISCUSSIONS_JSON | ->", file=sys.stderr)
         sys.exit(1)
 
     input_file = sys.argv[1]
 
     if input_file == "-":
-        notes = json.load(sys.stdin)
+        discussions = json.load(sys.stdin)
     else:
         with open(input_file, 'r') as f:
-            notes = json.load(f)
+            discussions = json.load(f)
 
     unresolved = []
-    for note in notes:
-        # Only human-resolvable diff comments
-        if note.get("type") != "DiffNote":
-            continue
-        if not note.get("resolvable"):
-            continue
-        if note.get("resolved", False):
+    for discussion in discussions:
+        notes = discussion.get("notes", [])
+        if not notes:
             continue
 
-        pos = note.get("position", {})
+        first_note = notes[0]
+
+        # Only human-resolvable diff discussion threads
+        if first_note.get("type") != "DiffNote":
+            continue
+        if not first_note.get("resolvable"):
+            continue
+        if first_note.get("resolved", False):
+            continue
+
+        replies = [
+            {"author": n["author"]["name"], "comment": n["body"]}
+            for n in notes[1:]
+        ]
+
         unresolved.append({
-            "id": note["id"],
-            "resolvable": note.get("resolvable", False),
-            "resolved": note.get("resolved", False),
-            "author": note["author"]["name"],
-            "comment": note["body"],
-            "position": pos,
+            "discussion_id": discussion["id"],
+            "author": first_note["author"]["name"],
+            "comment": first_note["body"],
+            "position": first_note.get("position", {}),
+            "replies": replies,
         })
 
     print(json.dumps(unresolved, indent=2, ensure_ascii=False))

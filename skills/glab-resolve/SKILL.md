@@ -37,13 +37,13 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 bash scripts/fetch_discussions.sh <MR_ID>
 ```
 
-脚本自动获取 URL 编码的项目路径并调用 `glab api --paginate`，输出过滤后的 JSON 列表。
+脚本自动获取 URL 编码的项目路径并调用 `glab api --paginate`，输出过滤后的讨论线程 JSON 列表。
 
-过滤条件：`type == "DiffNote"`（diff 行内评论）、`resolvable == true`、`resolved == false`，只保留未解决的 diff 评论。
+过滤条件：首条 note 的 `type == "DiffNote"`、`resolvable == true`、`resolved == false`，只保留未解决的 diff 评论线程。每条线程包含 `discussion_id`（用于后续 API resolve）、`author`、`comment`、`position`（文件与行号）、`replies`（回复列表）。
 
 **前置依赖**：需安装 `glab`、`jq`、`uv`（用于执行 Python 脚本）。
 
-若未提供 MR ID，询问用户。若命令失败，提示用户检查 `glab auth status` 和项目权限。
+若未提供 MR ID，询问用户。若命令失败，提示用户检查 `glab auth status` 和项目权限。如果获取到 JSON 列表，继续下一步。如果是空列表，提示用户 MR 中没有未处理的 diff 评论线程，结束流程。
 
 ### Step 3: 分析并分类问题
 
