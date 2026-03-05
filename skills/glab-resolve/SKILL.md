@@ -31,11 +31,7 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 ### Step 2: 获取 MR 评论
 
-使用 `fetch_discussions.sh` 拉取所有未处理的讨论线程： 
-
-```bash
-bash scripts/fetch_discussions.sh <MR_ID>
-```
+使用当前 skill 中的 `fetch_discussions.sh <MR_ID>` 拉取所有未处理的讨论线程： 
 
 脚本自动获取 URL 编码的项目路径并调用 `glab api --paginate`，输出过滤后的讨论线程 JSON 列表。
 
@@ -43,7 +39,10 @@ bash scripts/fetch_discussions.sh <MR_ID>
 
 **前置依赖**：需安装 `glab`、`jq`、`uv`（用于执行 Python 脚本）。
 
-若未提供 MR ID，询问用户。若命令失败，提示用户检查 `glab auth status` 和项目权限。如果获取到 JSON 列表，继续下一步。如果是空列表，提示用户 MR 中没有未处理的 diff 评论线程，结束流程。
+- 若未提供 MR ID，询问用户。
+- 若命令失败，提示用户检查 `glab auth status` 和项目权限。
+- 如果获取到 JSON 列表，继续下一步。
+- 如果是空列表，提示用户 MR 中没有未处理的 diff 评论线程，结束流程。
 
 ### Step 3: 分析并分类问题
 
