@@ -31,17 +31,17 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 ### Step 2: 获取 MR 评论
 
-使用 `glab api --paginate` 确保拉取所有评论（自动处理分页）： 
+使用 `fetch_discussions.sh` 拉取所有未处理的讨论线程： 
 
 ```bash
-# 获取项目路径（URL 编码的 namespace/project）
-PROJECT=$(glab repo view --output json | jq -r '.path_with_namespace' | python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.stdin.read().strip(), safe=''))")
-
-# 拉取所有 discussions（包含线程结构）
-glab api --paginate "projects/${PROJECT}/merge_requests/<MR_ID>/discussions"
+bash scripts/fetch_discussions.sh <MR_ID>
 ```
 
-过滤掉系统消息（`system: true`）和机器人评论，只保留真实用户的评论线程。
+脚本自动获取 URL 编码的项目路径并调用 `glab api --paginate`，输出过滤后的 JSON 列表。
+
+过滤条件：`type == "DiffNote"`（diff 行内评论）、`resolvable == true`、`resolved == false`，只保留未解决的 diff 评论。
+
+**前置依赖**：需安装 `glab`、`jq`、`uv`（用于执行 Python 脚本）。
 
 若未提供 MR ID，询问用户。若命令失败，提示用户检查 `glab auth status` 和项目权限。
 
