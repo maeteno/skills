@@ -39,6 +39,8 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 **前置依赖**：需安装 `glab`、`jq`、`uv`（用于执行 Python 脚本）。
 
+#### 获取评论的错误和结果处理
+
 - 若未提供 MR ID，询问用户。
 - 若命令失败，提示用户检查 `glab auth status` 和项目权限。
 - 如果获取到 JSON 列表，继续下一步。
@@ -46,7 +48,7 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 ### Step 3: 分析并分类问题
 
-过滤掉已解决的线程，只处理未解决的线程。然后按难度分类：
+按难度分类：
 
 | 难度 | 描述 | 示例 |
 |------|------|------|
@@ -115,7 +117,7 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 用户确认计划后，**严格按 Task 顺序逐一执行，不得跳跃或乱序**。立即从 Task 1 开始，每个 Task 无论是第几个，都必须独立展示方案并等待用户确认后才能执行——Step 6 的整体计划确认不能替代每个 Task 的执行确认。
 
-每个 Task 的执行流程：
+#### 每个 Task 的执行流程
 
 1. 展示当前 Task 的问题详情和建议的解决方案
 2. **等待用户响应**，用户可以：
