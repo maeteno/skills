@@ -31,7 +31,7 @@ glab mr view <MR_ID> --output json | jq -r '.source_branch'
 
 ### Step 2: 获取 MR 评论
 
-使用当前 skill 的 `scripts` 目录中的 `fetch_discussions.sh <MR_ID>` 拉取所有未处理的讨论线程。
+使用当前 skill 的 `scripts` 目录中的 `fetch_discussions.sh <MR_ID>` 拉取所有未处理的讨论线程, 执行脚本时不要输出结果到控制台。
 
 脚本自动获取 URL 编码的项目路径并调用 `glab api --paginate`，输出过滤后的讨论线程 JSON 列表。
 

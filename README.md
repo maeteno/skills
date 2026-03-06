@@ -25,3 +25,18 @@ A collection of Claude Code skills for common development workflows.
 中英文翻译与语法教学。支持纯中文、纯英文或中英混合输入，提供翻译结果并附语法分析，帮助学习和提升英文表达。
 
 **触发方式：** "翻译"、"translate"、"帮我翻译"、"这句话语法对吗"
+
+
+## Dev Tools
+
+### skill-reviewer
+
+代码审查工具，基于 Claude 分析代码变更，提供代码质量建议和改进方向。
+
+**触发方式：** `/skill-reviewer`
+
+**安装：**
+
+```
+pnpx skills add https://github.com/alienzhou/skill-reviewer --skill skill-reviewer
+```
