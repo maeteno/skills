@@ -1,8 +1,14 @@
-./*.skill
-.DS_Store
+# Skill artifacts
+*.skill
 
-.agents
-.claude
-.trae
+# Agent and IDE state
+.agents/
+.claude/
+.trae/
 
+# Build / tool outputs
 skills-lock.json
+
+# Eval outputs (test runs, benchmarks)
+*-workspace/
+skills/*/evals/

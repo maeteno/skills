@@ -26,7 +26,6 @@ A collection of Claude Code skills for common development workflows.
 
 **触发方式：** "翻译"、"translate"、"帮我翻译"、"这句话语法对吗"
 
-
 ## Dev Tools
 
 ### skill-reviewer
@@ -37,6 +36,6 @@ A collection of Claude Code skills for common development workflows.
 
 **安装：**
 
-```
+```bash
 pnpx skills add https://github.com/alienzhou/skill-reviewer --skill skill-reviewer
 ```
