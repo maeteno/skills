@@ -20,6 +20,14 @@ A collection of Claude Code skills for common development workflows.
 
 ---
 
+### workspace-context
+
+在任意目录感知本机工作目录根：当前位置所属的工作区、项目、仓库，同项目兄弟仓库，change/wiki 存放位置与搜索边界。附带 `ws.py`（`where`、`check`、`sync-docs`），可建立仓库内 `.docs/` 链接以免跨目录授权。红线常驻，细则按需读取，不依赖特定工具。
+
+**触发方式：** "这个仓库的 change 放哪"、"同项目其他仓库"、"登记仓库"、"修复 .docs 链接"
+
+---
+
 ### translate
 
 中英文翻译与语法教学。支持纯中文、纯英文或中英混合输入，提供翻译结果并附语法分析，帮助学习和提升英文表达。
